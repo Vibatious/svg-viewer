@@ -1,12 +1,15 @@
 'use strict';
 
 var button_id = 0
+
 var svg = function () {
     return document.getElementsByClassName('preview');
 }
+
 let original_svg = function () {
     return document.getElementById("original_svg");
 }
+
 let color_picker_div = function () {
     let div = document.createElement("div");
     div.id = "color_picker";
@@ -35,6 +38,7 @@ let create_span = function () {
     var span = document.createElement("span")
     document.body.append(span)
 }
+
 let color_button = function (value) {
     var btn = document.createElement("input");
     btn.type = "button";
