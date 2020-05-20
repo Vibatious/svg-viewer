@@ -1,12 +1,14 @@
 'use strict';
 var button_id = 0
-
 var svg = function () {
     return document.getElementsByClassName('preview');
 }
  
 let original_svg = function () {
     return document.getElementById("original_svg");
+}
+let update_svg = function () {
+    return document.getElementById("update_svg");
 }
 
 let color_picker_div = function () {
@@ -33,10 +35,13 @@ let color_object = function (g_tag) {
     return arr_fill;
 }
 
-let color_update = function(value,color,update_color_arr){
+let color_update = function(value,color){
+    let g_tag;
     let p = value.split("_");
-    update_color_arr[p[0]][p[1]] = color;
-    return update_color_arr;
+    g_tag = svg_doc_up.getElementsByTagName('g');
+    console.log(g_tag);
+    g_tag[p[0]].childNodes[p[1]].setAttribute('fill',color);
+    
 }
 
 let create_span = function () {
@@ -44,54 +49,52 @@ let create_span = function () {
     document.body.append(span)
 }
 
-let color_button_element = function (id,value,update_color_arr) {
+let color_button_element = function (id,value) {
     var btn = document.createElement("input");
     btn.type = "button";
     btn.addEventListener('click', () => {
-        color_picker(btn,update_color_arr);
+        color_picker(btn);
     })
     btn.id = id ;
     btn.classList.add("svg_color");
     btn.style.backgroundColor = value;
     document.getElementById("color_buttons").append(btn);
-    button_id++;
+    // button_id++;
 }
 
 let create_color_button = function (color_arr) {
-    var update_color_arr = color_arr;
     color_arr.forEach(e => {
         for (var key in e) {
             let index = color_arr.indexOf(e);
             let button_id = `${index}_${key}`;
-            color_button_element(button_id,e[key],update_color_arr);
+            color_button_element(button_id,e[key]);
         }
     })
 }
 
 
 
-let color_picker = async function (btn,update_color_arr) {
+let color_picker = async function (btn) {
     console.log("btn");
     let colorPicker = color_picker_div();
     $("#color_picker").colorpicker();
     $("#color_picker")
         .on("change.color", (event, color) => {
             btn.style.backgroundColor = color;
-            color_update(btn.id,color,update_color_arr);
+            color_update(btn.id,color);
             $("#color_picker").off("change.color");
             document.body.removeChild(colorPicker);
-
         })
 
 }
 
 var svg_handle = function () {
-    let svg_doc, color_arr;
+    var svg_doc, color_arr,svg_doc_up;
     svg_doc = original_svg().contentDocument;
+    svg_doc_up = update_svg().contentDocument;
     var g_tag = svg_doc.getElementsByTagName('g');
     color_arr = color_object(g_tag);
     create_color_button(color_arr);
-
 }
 
 
